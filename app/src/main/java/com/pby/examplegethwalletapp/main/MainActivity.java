@@ -65,45 +65,55 @@ public class MainActivity extends AppCompatActivity {
         mEtPasswordTx = (EditText) findViewById(R.id.et_password_tx_main);
         mBtnSendTx = (Button) findViewById(R.id.btn_send_tx_main);
 
-        mButtonNewAccount.setOnClickListener(new View.OnClickListener() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onClick(View v) {
+            public void onRefresh() {
+                new AsyncTask(){
 
+                    @Override
+                    protected Object doInBackground(Object[] objects) {
+
+                        List<UserWallet> userWallets = new ArrayList<>();
+
+                        try {
+                            Web3j web3 = Web3jFactory.build(new HttpService(URL));
+                            EthAccounts ethAccounts = web3.ethAccounts().sendAsync().get();
+                            List<String> accounts = ethAccounts.getAccounts();
+
+                            for(String account : accounts){
+                                EthGetBalance ethGetBalance = web3.ethGetBalance(account, DefaultBlockParameterName.LATEST).sendAsync().get();
+                                BigDecimal ether = Convert.fromWei(ethGetBalance.getBalance().toString(), Convert.Unit.ETHER);
+                                userWallets.add(new UserWallet(account, ether));
+                            }
+
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } finally {
+                            final List<UserWallet> userWalletList = userWallets;
+
+                            mAdapterWalletList = new WalletsRecyclerAdapter(userWalletList);
+                            mLayoutManagerWalletList = new LinearLayoutManager(getApplicationContext());
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    mRecyclerViewWalletList.setLayoutManager(mLayoutManagerWalletList);
+                                    mRecyclerViewWalletList.setAdapter(mAdapterWalletList);
+                                    mAdapterWalletList.notifyDataSetChanged();
+
+                                    mSwipeRefreshLayout.setRefreshing(false);
+                                }
+                            });
+                        }
+
+                        return null;
+                    }
+                }.execute();
             }
         });
-
-        new AsyncTask(){
-
-            @Override
-            protected Object doInBackground(Object[] objects) {
-
-                String[] accounts = new String[0];
-
-                try {
-                    Web3j web3 = Web3jFactory.build(new HttpService(URL));
-                    EthAccounts ethAccounts = web3.ethAccounts().sendAsync().get();
-                    accounts = ethAccounts.getAccounts().toArray(new String[0]);
-
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                final String[] accountArray = accounts;
-
-                mAdapterWalletList = new WalletsRecyclerAdapter(accountArray);
-                mLayoutManagerWalletList = new LinearLayoutManager(getApplicationContext());
-                mRecyclerViewWalletList.setLayoutManager(mLayoutManagerWalletList);
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        mRecyclerViewWalletList.setAdapter(mAdapterWalletList);
-                        mAdapterWalletList.notifyDataSetChanged();
-                    }
-                });
 
                 return null;
             }
