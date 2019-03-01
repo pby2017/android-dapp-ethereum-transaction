@@ -10,25 +10,12 @@
     <LinearLayout
         android:orientation="vertical"
         android:background="@android:color/white"
+        android:weightSum="10"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
             android:orientation="horizontal"
-            android:padding="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/btn_new_account_main"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_new_account"></Button>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:weightSum="4"
             android:layout_marginTop="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
