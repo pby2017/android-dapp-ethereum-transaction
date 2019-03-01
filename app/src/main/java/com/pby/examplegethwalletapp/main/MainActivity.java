@@ -170,5 +170,68 @@ public class MainActivity extends AppCompatActivity {
                 }.execute();
             }
         });
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("Geth 접속 주소를 입력하세요.");
+        alertDialog.setMessage("ex) http://192.168.0.1:8545");
+        final EditText etGethURL = new EditText(this);
+        alertDialog.setView(etGethURL);
+        alertDialog.setPositiveButton("저장", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String gethURL = etGethURL.getText().toString();
+                URL = gethURL;
+                new AsyncTask(){
+
+                    @Override
+                    protected Object doInBackground(Object[] objects) {
+
+                        List<UserWallet> userWallets = new ArrayList<>();
+
+                        try {
+                            Web3j web3 = Web3jFactory.build(new HttpService(URL));
+                            EthAccounts ethAccounts = web3.ethAccounts().sendAsync().get();
+                            List<String> accounts = ethAccounts.getAccounts();
+
+                            for(String account : accounts){
+                                EthGetBalance ethGetBalance = web3.ethGetBalance(account, DefaultBlockParameterName.LATEST).sendAsync().get();
+                                BigDecimal ether = Convert.fromWei(ethGetBalance.getBalance().toString(), Convert.Unit.ETHER);
+                                userWallets.add(new UserWallet(account, ether));
+                            }
+
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } finally {
+                            final List<UserWallet> userWalletList = userWallets;
+
+                            mAdapterWalletList = new WalletsRecyclerAdapter(userWalletList);
+                            mLayoutManagerWalletList = new LinearLayoutManager(getApplicationContext());
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    mRecyclerViewWalletList.setLayoutManager(mLayoutManagerWalletList);
+                                    mRecyclerViewWalletList.setAdapter(mAdapterWalletList);
+                                    mAdapterWalletList.notifyDataSetChanged();
+                                }
+                            });
+                        }
+
+                        return null;
+                    }
+                }.execute();
+            }
+        });
+        alertDialog.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toast.makeText(getApplicationContext(), "Geth 접속 주소를 입력해야 합니다.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+        alertDialog.show();
     }
 }
