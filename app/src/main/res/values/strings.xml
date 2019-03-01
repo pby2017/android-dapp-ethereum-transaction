@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Example Geth Wallet App</string>
+    <string name="btn_new_account">지갑 주소 생성</string>
+    <string name="txt_wallet_list">지갑 주소 목록</string>
+</resources>
