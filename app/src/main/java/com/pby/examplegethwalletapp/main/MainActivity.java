@@ -115,8 +115,60 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-                return null;
+        mBtnSendTx.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if((mEtFromTx.length() * mEtToTx.length() * mEtEtherTx.length()) == 0){
+                    Toast.makeText(getApplicationContext(), "빈 항목이 있습니다."
+                            +mEtFromTx.length() +""+ mEtToTx.length() +""+ mEtEtherTx.length(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                new AsyncTask(){
+
+                    @Override
+                    protected Object doInBackground(Object[] objects) {
+
+                        try {
+                            String fromTx = mEtFromTx.getText().toString();
+                            String toTx = mEtToTx.getText().toString();
+                            String etherTx = mEtEtherTx.getText().toString();
+                            String passwordTx = mEtPasswordTx.getText().toString();
+                            Admin admin = AdminFactory.build(new HttpService(URL));
+
+                            PersonalUnlockAccount personalUnlockAccount
+                                    = admin.personalUnlockAccount(fromTx, passwordTx).sendAsync().get();
+
+                            Transaction transaction = Transaction.createEtherTransaction(
+                                    fromTx,
+                                    null, null, null,
+                                    toTx,
+                                    Convert.toWei(etherTx, Convert.Unit.ETHER).toBigInteger()
+                            );
+
+                            EthSendTransaction ethSendTransaction = admin.ethSendTransaction(transaction).sendAsync().get();
+
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        } catch (MessageDecodingException e){
+                            e.printStackTrace();
+                        } finally {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    mEtEtherTx.setText("");
+                                    mEtPasswordTx.setText("");
+                                }
+                            });
+                        }
+
+                        return null;
+                    }
+                }.execute();
             }
-        }.execute();
+        });
     }
 }
