@@ -57,8 +57,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mButtonNewAccount = (Button) findViewById(R.id.btn_new_account_main);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.layout_swipe_main);
         mRecyclerViewWalletList = (RecyclerView) findViewById(R.id.recycler_wallet_list_main);
+        mEtFromTx = (EditText) findViewById(R.id.et_from_tx_main);
+        mEtToTx = (EditText) findViewById(R.id.et_to_tx_main);
+        mEtEtherTx = (EditText) findViewById(R.id.et_ether_tx_main);
+        mEtPasswordTx = (EditText) findViewById(R.id.et_password_tx_main);
+        mBtnSendTx = (Button) findViewById(R.id.btn_send_tx_main);
 
         mButtonNewAccount.setOnClickListener(new View.OnClickListener() {
             @Override
