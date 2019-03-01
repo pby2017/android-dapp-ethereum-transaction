@@ -38,12 +38,19 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity {
 
-    final private String URL = "";
+    private String URL;
 
-    private Button mButtonNewAccount;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
     private RecyclerView mRecyclerViewWalletList;
     private RecyclerView.Adapter mAdapterWalletList;
     private RecyclerView.LayoutManager mLayoutManagerWalletList;
+
+    private EditText mEtFromTx;
+    private EditText mEtToTx;
+    private EditText mEtEtherTx;
+    private EditText mEtPasswordTx;
+    private Button mBtnSendTx;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
