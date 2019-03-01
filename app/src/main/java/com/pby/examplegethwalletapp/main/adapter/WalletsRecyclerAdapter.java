@@ -1,20 +1,29 @@
 package com.pby.examplegethwalletapp.main.adapter;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pby.examplegethwalletapp.R;
+import com.pby.examplegethwalletapp.main.model.UserWallet;
+
+import java.util.List;
 
 public class WalletsRecyclerAdapter extends RecyclerView.Adapter<WalletsRecyclerAdapter.WalletsViewHolder> {
 
-    private String[] mAccountArray;
+    private List<UserWallet> mUserWalletList;
 
-    public WalletsRecyclerAdapter(String[] accountArray){
-        mAccountArray = accountArray;
+    public WalletsRecyclerAdapter(List<UserWallet> userWalletList){
+        mUserWalletList = userWalletList;
     }
 
     @NonNull
@@ -29,20 +38,25 @@ public class WalletsRecyclerAdapter extends RecyclerView.Adapter<WalletsRecycler
 
     @Override
     public void onBindViewHolder(@NonNull WalletsViewHolder walletsViewHolder, int position) {
-        walletsViewHolder.mTxtAddress.setText(mAccountArray[position]);
+        walletsViewHolder.mTxtAddress.setText(mUserWalletList.get(position).getAddress());
+        walletsViewHolder.mTxtEther.setText(mUserWalletList.get(position).getEther().toString() + " eth");
     }
 
     @Override
     public int getItemCount() {
-        return mAccountArray.length;
+        return mUserWalletList.size();
     }
 
     public static class WalletsViewHolder extends RecyclerView.ViewHolder{
+        private LinearLayout mLayoutCard;
         private TextView mTxtAddress;
+        private TextView mTxtEther;
 
         public WalletsViewHolder(View itemView){
             super(itemView);
-            mTxtAddress = (TextView) itemView.findViewById(R.id.txt_wallet_card);
+            mLayoutCard = (LinearLayout) itemView.findViewById(R.id.layout_card);
+            mTxtAddress = (TextView) itemView.findViewById(R.id.txt_address_card);
+            mTxtEther = (TextView) itemView.findViewById(R.id.txt_ether_card);
         }
     }
 
