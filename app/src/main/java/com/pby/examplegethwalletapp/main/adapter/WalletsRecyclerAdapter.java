@@ -33,6 +33,23 @@ public class WalletsRecyclerAdapter extends RecyclerView.Adapter<WalletsRecycler
                 .inflate(R.layout.card_wallet, viewGroup, false);
         WalletsViewHolder walletsViewHolder = new WalletsViewHolder(v);
 
+        final Context mParentContext = viewGroup.getContext();
+        final TextView mTxtAddress = (TextView) v.findViewById(R.id.txt_address_card);
+        v.findViewById(R.id.layout_card).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+
+                    ClipboardManager clipboardManager = (ClipboardManager) mParentContext.getSystemService(mParentContext.CLIPBOARD_SERVICE);
+                    ClipData clipData = ClipData.newPlainText("address", mTxtAddress.getText().toString());
+                    clipboardManager.setPrimaryClip(clipData);
+
+                    Toast.makeText(mParentContext,"ID가 복사되었습니다.",Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+
         return walletsViewHolder;
     }
 
