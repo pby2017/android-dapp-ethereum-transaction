@@ -27,4 +27,5 @@ ex) http://192.168.0.5:8544
 ```
 
 ## UI
+※ 편의상 첫 번째 계정은 비밀번호를 공백으로 생성했기 때문에 이더 전송 트랜잭션 생성시 비밀번호 입력란을 공백으로 두었음.
 <img src="https://github.com/pby2017/study-android-web3j-app/blob/master/image/sample.gif" width="288" height="512">
